@@ -5,7 +5,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
 
-  const linkClass = (name:any) =>
+  const linkClass = (name:string) =>
     active === name
       ? "text-cyan-200 font-medium"
       : "text-white hover:text-cyan-200 transition";

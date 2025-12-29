@@ -2,6 +2,7 @@
 
 export function SkillsSection() {
   return (
+    <div className="mx-[10%]">
     <section className="mt-36 w-full max-w-[1180px] max-md:mt-10 max-md:max-w-full">
       <div className="flex gap-5 max-md:flex-col">
         <div className="w-[33%] max-md:ml-0 max-md:w-full">
@@ -26,6 +27,7 @@ export function SkillsSection() {
           />
         </div>
       </div>
-    </section>
+      </section>
+      </div>
   );
 }

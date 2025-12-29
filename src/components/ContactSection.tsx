@@ -1,3 +1,4 @@
+import IshaLogo from "./../assets/ishawitelogo.svg"
 
 export function ContactSection() {
   return (
@@ -32,14 +33,25 @@ export function ContactSection() {
           </div>
         </div>
         <div className="ml-5 w-[21%] max-md:ml-0 max-md:w-full">
-          <div className="flex relative flex-col justify-center px-11 py-11 text-6xl text-white whitespace-nowrap rounded-md aspect-[1.023] max-md:px-5 max-md:mt-10 max-md:text-4xl">
-            <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/f7aa5f5ffd031eaf8aa67c2829dcfd6854b558c4?placeholderIfAbsent=true&apiKey=f2d3014bc7054ec3aa77eed737369b56"
-              alt=""
-              className="object-cover absolute inset-0 size-full"
-            />
-            <span className="relative max-md:text-4xl">Isha</span>
-          </div>
+         <div className="flex relative flex-col justify-center px-11 py-11 rounded-md aspect-[1.023] max-md:px-5 max-md:mt-10">
+
+        {/* BACKGROUND */}
+        <div
+          className="absolute inset-0 bg-cover bg-center rounded-md"
+          style={{
+            backgroundImage:
+              "url('https://api.builder.io/api/v1/image/assets/TEMP/f7aa5f5ffd031eaf8aa67c2829dcfd6854b558c4?placeholderIfAbsent=true&apiKey=f2d3014bc7054ec3aa77eed737369b56')",
+          }}
+        />
+        {/* LOGO */}
+        <div className="relative z-10 flex justify-center items-center">
+          <img
+            src={IshaLogo}
+            alt="logo"
+          />
+        </div>
+      </div>
+
         </div>
       </div>
     </section>

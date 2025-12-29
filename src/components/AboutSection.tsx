@@ -1,6 +1,7 @@
 
 export function AboutSection() {
   return (
+    <div className="mx-[10%]">
     <section className="mt-36 w-full max-w-[1199px] max-md:mt-10 max-md:max-w-full">
       <div className="flex gap-5 max-md:flex-col">
         <div className="w-[43%] max-md:ml-0 max-md:w-full">
@@ -58,6 +59,7 @@ export function AboutSection() {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+      </div>
   );
 }
