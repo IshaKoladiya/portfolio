@@ -10,6 +10,7 @@ import { HeroSection } from "./components/HeroSection";
 import { ProjectCard } from "./components/ProjectCard";
 import { SkillsSection } from "./components/SkillsSection";
 import { SkillsTags } from './components/SkillsTags';
+import Movielist from './components/Movielist';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,7 +53,7 @@ function App() {
       {/* ✅ GSAP ONLY HERE */}
       <section
         ref={projectRef}
-        className="relative h-screen overflow-hidden"
+        className="relative h-screen overflow-hidden mt-18"
       >
         <ProjectCard />
         <ProjectCard />
@@ -65,7 +66,8 @@ function App() {
       <AboutSection />
       <div className="flex flex-col items-center self-stretch px-4 mt-20 w-full max-md:mt-10 max-md:max-w-full">
       <ContactSection />
-      <Footer />
+        <Footer />
+        {/* <Movielist/> */}
      </div>
 
     </main>

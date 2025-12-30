@@ -11,7 +11,7 @@ export function Header() {
       : "text-white hover:text-cyan-200 transition";
 
   return (
-    <header className="mx-auto mt-3 w-full max-w-[95%] px-4">
+    <header className="mx-auto pt-10 w-full max-w-[95%] px-4">
       {/* Main Navbar */}
       <div className="flex items-center justify-between rounded-full bg-neutral-800 px-5 py-2">
 
@@ -19,7 +19,7 @@ export function Header() {
           <img src={IshaLogo} alt="logo" width={60} height={60} className="ml-4"/>
 
         {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center gap-8 text-lg">
+        <nav className="hidden md:flex items-center gap-8 text-md">
           <a href="#home" onClick={() => setActive("home")} className={linkClass("home")}>
             Home
           </a>

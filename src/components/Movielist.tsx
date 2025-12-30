@@ -1,132 +1,140 @@
 import { useEffect, useState } from "react";
 
-const API_KEY = "937bd7f3";
+// const TMDB_API_KEY = "a36fc5084ac2125d7be99ba991b621f4";
+const TMDB_API_KEY = "ba8e45268a7f0a694af137056c5b0fe4";
+const IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 
-type Movie = {
-  imdbID: string;
-  Title: string;
-  Year: string;
-  Poster: string;
-  Type: string;
-};
-
-export default function MovieList() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(false);
+export default function Movielist() {
+  const [tab, setTab] = useState<"movie" | "tv" | "person">("movie");
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false); 
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("movie");
-  const [language, setLanguage] = useState<"all" | "english" | "gujarati">("all");
+  const [search, setSearch] = useState("");
+  const [language, setLanguage] = useState("en");
 
-  const fetchMovies = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
       setError("");
 
-      let query = search;
-      if (language === "gujarati") query = `${search} gujarati`;
-      if (language === "english") query = `${search} english`;
+      let url = "";
 
-      const res = await fetch(
-        `https://www.omdbapi.com/?s=${query}&page=${page}&apikey=${API_KEY}`
-      );
-      const data = await res.json();
-
-      if (data.Response === "True") {
-        setMovies(data.Search);
+      if (search) {
+        url = `https://api.themoviedb.org/3/search/${tab}?api_key=${TMDB_API_KEY}&query=${search}&page=${page}`;
       } else {
-        setMovies([]);
-        setError(data.Error);
+        if (tab === "movie") {
+          url = `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&with_original_language=${language}&page=${page}`;
+        }
+        if (tab === "tv") {
+          url = `https://api.themoviedb.org/3/discover/tv?api_key=${TMDB_API_KEY}&with_original_language=${language}&page=${page}`;
+        }
+        if (tab === "person") {
+          url = `https://api.themoviedb.org/3/person/popular?api_key=${TMDB_API_KEY}&page=${page}`;
+        }
       }
-    } catch (err) {
-      setError("Something went wrong");
+
+      const res = await fetch(url);
+      const json = await res.json();
+      setData(json.results || []);
+    } catch (e) {
+      setError("Failed to load data");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, [page, language]);
+    fetchData();
+  }, [tab, page, language ,search]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-6 text-white">
-      <h1 className="text-3xl font-bold mb-6 text-center">🎬 Movie Explorer</h1>
+      <h1 className="text-3xl font-bold text-center mb-6">🎬 Explore TMDB</h1>
+
+      {/* Tabs */}
+      <div className="flex justify-center gap-6 mb-6">
+        {["movie", "tv", "person"].map((t) => (
+          <button
+            key={t}
+            onClick={() => {
+              setTab(t as any);
+              setPage(1);
+              setSearch("");
+            }}
+            className={`px-5 py-2 rounded-full ${tab === t ? "bg-red-600" : "bg-gray-700"}`}
+          >
+            {t === "movie" && "Movies"}
+            {t === "tv" && "TV Shows"}
+            {t === "person" && "Artists"}
+          </button>
+        ))}
+      </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6 justify-center">
+      <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
         <input
-          type="text"
-          placeholder="Search movie..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none"
+          placeholder={`Search ${tab}...`}
+          className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg"
         />
 
-        <select
-          value={language}
-          onChange={(e) => {
-            setPage(1);
-            setLanguage(e.target.value as any);
-          }}
-          className="px-4 py-2 rounded-lg bg-gray-800 border border-gray-700"
-        >
-          <option value="all">All Movies</option>
-          <option value="english">English</option>
-          <option value="gujarati">Gujarati</option>
-        </select>
+        {tab !== "person" && (
+          <select
+            value={language}
+            onChange={(e) => {
+              setLanguage(e.target.value);
+              setPage(1);
+            }}
+            className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg"
+          >
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="gu">Gujarati</option>
+          </select>
+        )}
 
-        <button
+        {/* <button
           onClick={() => {
             setPage(1);
-            fetchMovies();
+            fetchData();
           }}
-          className="px-6 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition"
+          className="px-6 py-2 bg-red-600 rounded-lg hover:bg-red-700"
         >
           Search
-        </button>
+        </button> */}
       </div>
 
       {/* Status */}
-      {loading && <p className="text-center">Loading movies...</p>}
+      {loading && <p className="text-center">Loading...</p>}
       {error && <p className="text-center text-red-400">{error}</p>}
 
-      {/* Movie Grid */}
+      {/* Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {movies.map((movie) => (
-          <div
-            key={movie.imdbID}
-            className="bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition"
-          >
+        {data.map((item) => (
+          <div key={item.id} className="bg-gray-800 rounded-xl overflow-hidden hover:scale-105 transition">
             <img
-              src={movie.Poster !== "N/A" ? movie.Poster : "https://via.placeholder.com/300x450"}
-              alt={movie.Title}
+              src={item.poster_path || item.profile_path ? IMAGE_BASE + (item.poster_path || item.profile_path) : "https://via.placeholder.com/300x450"}
               className="w-full h-[320px] object-cover"
             />
             <div className="p-3">
-              <h3 className="font-semibold text-sm line-clamp-2">{movie.Title}</h3>
-              <p className="text-xs text-gray-400">{movie.Year} • {movie.Type}</p>
+              <h3 className="text-sm font-semibold line-clamp-2">
+                {item.title || item.name}
+              </h3>
+              <p className="text-xs text-gray-400">
+                {item.release_date || item.first_air_date || ""}
+              </p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center items-center gap-6 mt-10">
-        <button
-          disabled={page === 1}
-          onClick={() => setPage((p) => p - 1)}
-          className="px-5 py-2 rounded-lg bg-gray-700 disabled:opacity-40"
-        >
-          Prev
-        </button>
-        <span className="text-sm">Page {page}</span>
-        <button
-          onClick={() => setPage((p) => p + 1)}
-          className="px-5 py-2 rounded-lg bg-gray-700"
-        >
-          Next
-        </button>
+      <div className="flex justify-center gap-6 mt-10">
+        <button disabled={page === 1} onClick={() => setPage(page - 1)} className="px-5 py-2 bg-gray-700 rounded-lg">Prev</button>
+        <span>Page {page}</span>
+        <button onClick={() => setPage(page + 1)} className="px-5 py-2 bg-gray-700 rounded-lg">Next</button>
       </div>
     </div>
   );
